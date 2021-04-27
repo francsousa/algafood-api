@@ -1,6 +1,6 @@
 package com.algaworks.algafood.api.exceptionhandler;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -141,11 +141,10 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 			HttpStatus status, WebRequest request) {
 
 		if (body == null) {
-			body = Problem.builder().timestamp(LocalDateTime.now()).title(status.getReasonPhrase())
+			body = Problem.builder().timestamp(OffsetDateTime.now()).title(status.getReasonPhrase())
 					.status(status.value()).userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL).build();
-
 		} else if (body instanceof String) {
-			body = Problem.builder().timestamp(LocalDateTime.now()).title((String) body).status(status.value())
+			body = Problem.builder().timestamp(OffsetDateTime.now()).title((String) body).status(status.value())
 					.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL).build();
 		}
 
@@ -202,19 +201,18 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-	        HttpHeaders headers, HttpStatus status, WebRequest request) {
-	    return handleValidationInternal(ex, ex.getBindingResult(), headers, status, request);
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		return handleValidationInternal(ex, ex.getBindingResult(), headers, status, request);
 	}
-	
+
 	@ExceptionHandler({ ValidacaoException.class })
 	public ResponseEntity<Object> handleValidacaoException(ValidacaoException ex, WebRequest request) {
-	    return handleValidationInternal(ex, ex.getBindingResult(), new HttpHeaders(), 
-	            HttpStatus.BAD_REQUEST, request);
+		return handleValidationInternal(ex, ex.getBindingResult(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
 	}
 
 	private Problem.ProblemBuilder createProblemBuilder(HttpStatus status, ProblemType problemType, String detail) {
 
-		return Problem.builder().timestamp(LocalDateTime.now()).status(status.value()).type(problemType.getUri())
+		return Problem.builder().timestamp(OffsetDateTime.now()).status(status.value()).type(problemType.getUri())
 				.title(problemType.getTitle()).detail(detail);
 	}
 
